@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Horizon Elementary - Picture Dictionary Games</title>
+    <!-- Friendly Comic Sans MS Font -->
+    <style>
+        :root {
+            --primary: #0288D1; /* Cool Sky Blue */
+            --secondary: #00897B; /* Deep Teal */
+            --accent: #26A69A; /* Mint Green */
+            --bg: #E0F7FA; /* Soft Ice Blue Background */
+            --card-bg: #FFFFFF;
+            --text: #263238;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+            animation: fadeInDown 0.8s ease-in-out;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.3rem;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 0px #B3E5FC;
+            animation: bounce 2s infinite;
+        }
+
+        p.subtitle {
+            color: var(--secondary);
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        /* Cool-Tone Navigation Menu */
+        .nav-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .nav-btn {
+            background-color: white;
+            border: 3px solid var(--secondary);
+            color: var(--secondary);
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--secondary);
+            color: white;
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 137, 123, 0.3);
+        }
+
+        /* Animated Game Container */
+        .game-container {
+            background: var(--card-bg);
+            border: 4px solid #80CBC4;
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 10px 30px rgba(0, 150, 136, 0.15);
+            display: none;
+            box-sizing: border-box;
+            text-align: center;
+            min-height: 440px;
+            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .game-container.active {
+            display: block;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary);
+            background: #E0F2F1;
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 2px dashed var(--accent);
+        }
+
+        /* Category Selector */
+        .category-select {
+            margin-bottom: 20px;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        .category-select select {
+            font-family: inherit;
+            padding: 8px 15px;
+            font-size: 1rem;
+            border-radius: 10px;
+            border: 2px solid var(--primary);
+            outline: none;
+            font-weight: bold;
+            color: var(--text);
+            background: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .category-select select:hover {
+            border-color: var(--secondary);
+        }
+
+        /* 1. Memory Card Game Styles */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 20px auto;
+            max-width: 500px;
+            min-height: 220px;
+        }
+        .memory-card {
+            background-color: var(--primary);
+            height: 90px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 5px;
+            text-align: center;
+        }
+        .memory-card:hover {
+            transform: scale(1.06) rotate(1deg);
+            box-shadow: 0 6px 12px rgba(2, 136, 209, 0.3);
+        }
+        .memory-card.flipped {
+            background-color: white;
+            color: var(--text);
+            border: 3px solid var(--primary);
+            animation: flipAnim 0.3s ease;
+        }
+        .memory-card.matched {
+            background-color: #B9F6CA;
+            color: #1B5E20;
+            border: 3px solid #00C853;
+            cursor: default;
+            animation: pulseMatch 0.5s ease;
+        }
+
+        /* 2. Drag & Match Styles */
+        .match-area {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            gap: 20px;
+            min-height: 250px;
+        }
+        .match-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+        .match-item {
+            background: #E1F5FE;
+            border: 2px solid var(--primary);
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .match-item:hover {
+            background: #B3E5FC;
+        }
+        .match-item.selected {
+            background: var(--accent);
+            color: white;
+            transform: scale(1.05);
+        }
+        .match-item.matched {
+            background: #B9F6CA;
+            border-color: #00C853;
+            color: #1B5E20;
+            cursor: default;
+        }
+
+        /* 3 & 4. Puzzle Tiles Slots */
+        .puzzle-slots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+            min-height: 50px;
+            flex-wrap: wrap;
+        }
+        .puzzle-tile {
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            background: var(--secondary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 0 14px;
+            user-select: none;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        .puzzle-tile:hover {
+            background: #00796B;
+            transform: translateY(-2px);
+        }
+        .bank-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            min-height: 50px;
+        }
+
+        /* 5. Typing Game Styles */
+        .typing-prompt {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary);
+            margin: 20px 0;
+            letter-spacing: 1px;
+            animation: pulseText 1.5s infinite;
+        }
+        .typing-input {
+            font-family: inherit;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border: 3px solid var(--primary);
+            border-radius: 10px;
+            text-align: center;
+            outline: none;
+            width: 60%;
+            transition: 0.3s;
+        }
+        .typing-input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(0, 137, 123, 0.4);
+        }
+
+        /* Feedback & Action Buttons */
+        .message-box {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            min-height: 30px;
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-family: inherit;
+            box-shadow: 0 4px 10px rgba(2, 136, 209, 0.3);
+            transition: all 0.2s;
+        }
+        .action-btn:hover {
+            background-color: #0277BD;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(2, 136, 209, 0.4);
+        }
+
+        /* Smooth Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        @keyframes flipAnim {
+            0% { transform: rotateY(90deg); }
+            100% { transform: rotateY(0); }
+        }
+        @keyframes pulseMatch {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        @keyframes pulseText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🌟 New Horizon Picture Dictionary Games 🌟</h1>
+        <p class="subtitle">Elementary School English Practice</p>
+    </header>
+
+    <!-- Navigation Menu -->
+    <div class="nav-menu">
+        <button class="nav-btn active" onclick="switchTab('memory', this)">🧠 Memory Game</button>
+        <button class="nav-btn" onclick="switchTab('match', this)">🔗 Drag & Match</button>
+        <button class="nav-btn" onclick="switchTab('arrangeLetters', this)">🔤 Unscramble Word</button>
+        <button class="nav-btn" onclick="switchTab('arrangeSentence', this)">📝 Arrange Sentence</button>
+        <button class="nav-btn" onclick="switchTab('typing', this)">⌨️ Typing Practice</button>
+    </div>
+
+    <!-- Category Selector -->
+    <div class="category-select">
+        <label for="categoryDropdown"><strong>Select Textbook Section: </strong></label>
+        <select id="categoryDropdown" onchange="changeCategory()">
+            <option value="sports">Color / Shape / Sports (色・形・スポーツ)</option>
+            <option value="food">Food / Drinks / Desserts (食べ物・飲み物・デザート)</option>
+            <option value="fruits">Fruits / Vegetables / Meals (果物・野菜・食事)</option>
+            <option value="animals">Animals / Nature / Insects (動物・自然・昆虫)</option>
+            <option value="time">Month / Date / Day / Weather (月・日付・曜日・天気)</option>
+            <option value="people">People / Family / Personality (人・家族・性格)</option>
+            <option value="school">Subjects / Stationery / School (教科・文房具)</option>
+            <option value="actions">Actions & Daily Life (動作・一日)</option>
+            <option value="town">Town / Directions / Location (町・道案内)</option>
+        </select>
+    </div>
+
+    <!-- GAME 1: MEMORY CARD GAME -->
+    <div id="memory-game" class="game-container active">
+        <h2>Memory Card Match</h2>
+        <div class="stats-bar">
+            <span>Pairs Matched: <span id="memory-score">0</span> / 4</span>
+            <span>⏱️ Time: <span id="memory-timer">0</span>s</span>
+        </div>
+        <div class="memory-grid" id="memoryGrid"></div>
+        <button class="action-btn" onclick="initMemoryGame()">Play Again</button>
+    </div>
+
+    <!-- GAME 2: DRAG & MATCH -->
+    <div id="match-game" class="game-container">
+        <h2>Word & Meaning Match</h2>
+        <div class="stats-bar">
+            <span>Pairs Matched: <span id="match-score">0</span> / 4</span>
+            <span>⏱️ Time: <span id="match-timer">0</span>s</span>
+        </div>
+        <div class="match-area">
+            <div class="match-column" id="englishColumn"></div>
+            <div class="match-column" id="japaneseColumn"></div>
+        </div>
+        <div class="message-box" id="match-message"></div>
+        <button class="action-btn" onclick="initMatchGame()">Next Set</button>
+    </div>
+
+    <!-- GAME 3: ARRANGE LETTERS (Unscramble) -->
+    <div id="arrangeLetters-game" class="game-container">
+        <h2>Unscramble the Letters</h2>
+        <div class="stats-bar">
+            <span>Words Solved: <span id="letter-score">0</span></span>
+            <span>⏱️ Time: <span id="letter-timer">0</span>s</span>
+        </div>
+        <div id="letter-hint" style="font-weight:bold; color:var(--primary); font-size: 1.2rem;"></div>
+        <div class="puzzle-slots" id="letterSlots"></div>
+        <div class="bank-container" id="letterBank"></div>
+        <div class="message-box" id="letter-message"></div>
+        <button class="action-btn" onclick="initLetterGame()">Next Word</button>
+    </div>
+
+    <!-- GAME 4: ARRANGE SENTENCE -->
+    <div id="arrangeSentence-game" class="game-container">
+        <h2>Arrange the Sentence</h2>
+        <div class="stats-bar">
+            <span>Sentences Solved: <span id="sentence-score">0</span></span>
+            <span>⏱️ Time: <span id="sentence-timer">0</span>s</span>
+        </div>
+        <div class="puzzle-slots" id="sentenceSlots"></div>
+        <div class="bank-container" id="sentenceBank"></div>
+        <div class="message-box" id="sentence-message"></div>
+        <button class="action-btn" onclick="initSentenceGame()">Next Sentence</button>
+    </div>
+
+    <!-- GAME 5: TYPING PRACTICE -->
+    <div id="typing-game" class="game-container">
+        <h2>ESL Typing Practice</h2>
+        <div class="stats-bar">
+            <span>Correct Words: <span id="typing-score">0</span></span>
+            <span>⏱️ Time Left: <span id="typing-timer">60</span>s</span>
+        </div>
+        <div class="typing-prompt" id="typingPrompt">Press Start Below!</div>
+        <input type="text" id="typingInput" class="typing-input" autocomplete="off" placeholder="Type here and press Enter..." disabled onkeydown="handleTyping(event)">
+        <div class="message-box" id="typing-message">Click start to begin the 60-second challenge!</div>
+        <button class="action-btn" id="typingStartBtn" onclick="initTypingGame()">Start 60s Challenge</button>
+    </div>
+
+    <script>
+        const vocabData = {
+            sports: [
+                {en: "red", jp: "赤"}, {en: "blue", jp: "青"}, {en: "yellow", jp: "黄"}, {en: "green", jp: "緑"},
+                {en: "white", jp: "白"}, {en: "black", jp: "黒"}, {en: "pink", jp: "ピンク"}, {en: "purple", jp: "紫"},
+                {en: "orange", jp: "だいだい"}, {en: "brown", jp: "茶色"}, {en: "light blue", jp: "水色"},
+                {en: "yellow green", jp: "黄緑"}, {en: "gold", jp: "金(色)"}, {en: "silver", jp: "銀(色)"},
+                {en: "gray", jp: "グレー"},
+                {en: "circle", jp: "円"}, {en: "star", jp: "星"}, {en: "square", jp: "四角"},
+                {en: "triangle", jp: "三角"}, {en: "rectangle", jp: "長方形"}, {en: "diamond", jp: "ひし形"},
+                {en: "heart", jp: "ハート形"},
+                {en: "soccer", jp: "サッカー"}, {en: "baseball", jp: "野球"}, {en: "basketball", jp: "バスケットボール"},
+                {en: "tennis", jp: "テニス"}, {en: "swimming", jp: "水泳"}, {en: "badminton", jp: "バドミントン"},
+                {en: "rugby", jp: "ラグビー"}, {en: "table tennis", jp: "卓球"}, {en: "cricket", jp: "クリケット"},
+                {en: "gymnastics", jp: "体操"}, {en: "track and field", jp: "陸上競技"}, {en: "marathon", jp: "マラソン"},
+                {en: "softball", jp: "ソフトボール"},  {en: "dancing", jp: "ダンス"},
+                {en: "dodgeball", jp: "ドッジボール"}, {en: "volleyball", jp: "バレーボール"}, {en: "skating", jp: "スケート"}
+            ],
+            food: [
+                {en: "curry and rice", jp: "カレーライス"}, {en: "rice ball", jp: "おにぎり"},
+                {en: "grilled eel", jp: "うなぎの蒲焼き"}, {en: "grilled fish", jp: "焼き魚"},
+                {en: "sandwich", jp: "サンドイッチ"}, {en: "pancake", jp: "パンケーキ"},
+                {en: "hot dog", jp: "ホットドッグ"}, {en: "French fries", jp: "フライドポテト"},
+                {en: "fried chicken", jp: "フライドチキン"}, {en: "sausage", jp: "ソーセージ"},
+                {en: "steak", jp: "ステーキ"}, {en: "omelet", jp: "オムレツ"}, {en: "spaghetti", jp: "スパゲッティ"},
+                {en: "pie", jp: "パイ"}, {en: "fried noodles", jp: "焼きそば"}, {en: "coffee", jp: "コーヒー"},
+                {en: "beef bowl", jp: "牛丼"}, {en: "tea", jp: "お茶"}, {en: "green tea", jp: "緑茶"},
+                {en: "soda", jp: "soda"}, {en: "water", jp: "水"}, {en: "mineral water", jp: "ミネラルウォーター"},
+                {en: "donut", jp: "ドーナツ"}, {en: "parfait", jp: "パフェ"}, {en: "pudding", jp: "プリン"},
+                {en: "shaved ice", jp: "かき氷"}, {en: "chocolate", jp: "チョコレート"},
+                {en: "cream puff", jp: "シュークリーム"}, {en: "popcorn", jp: "ポップコーン"},
+                {en: "potato chips", jp: "ポテトチップス"}, {en: "cookie", jp: "クッキー"},
+                {en: "tuna bowl", jp: "マグロ丼"}, {en: "miso soup", jp: "味噌汁"},
+                {en: "sushi", jp: "すし"}, {en: "pizza", jp: "ピザ"}, {en: "milk", jp: "牛乳"},
+                {en: "hamburger", jp: "ハンバーガー"}, {en: "ice cream", jp: "アイスクリーム"},
+                {en: "cake", jp: "ケーキ"}, {en: "juice", jp: "ジュース"}, {en: "bread", jp: "パン"},
+                {en: "rice", jp: "ご飯"}, {en: "salad", jp: "サラダ"}, {en: "soup", jp: "スープ"}
+            ],
+            fruits: [
+                {en: "strawberry", jp: "いちご"}, {en: "watermelon", jp: "スイカ"}, {en: "peach", jp: "もも"},
+                {en: "apple", jp: "りんご"}, {en: "banana", jp: "バナナ"},   {en: "broccoli", jp: "ブロッコリー"},
+                {en: "cabbage", jp: "キャベツ"}, {en: "carrot", jp: "ニンジン"}, {en: "cherry", jp: "チェリー"},
+                {en: "corn", jp: "コーン"}, {en: "cucumber", jp: "キュウリ"}, {en: "eggplant", jp: "ナス"},
+                {en: "green pepper", jp: "ピーマン"}, {en: "kiwi fruit", jp: "キウイフルーツ"},
+                {en: "lemon", jp: "レモン"}, {en: "lettuce", jp: "レタス"}, {en: "mushroom", jp: "キノコ"},
+                {en: "nut", jp: "ナッツ"}, {en: "pineapple", jp: "パイナップル"}, {en: "spinach", jp: "ほうれん草"},
+                {en: "mango", jp: "マンゴー"}, {en: "pear", jp: "梨"}, {en: "persimmon", jp: "柿"},
+                {en: "pumpkin", jp: "パンプキン"}, {en: "radish", jp: "ラディッシュ"},
+                {en: "school lunch", jp: "給食"},{en: "snack", jp: "おやつ"}, {en: "bitter", jp: "苦い"},
+                {en: "sour", jp: "すっぱい"}, {en: "hot", jp: "熱い"}, {en: "cold", jp: "冷たい"},
+                {en: "melon", jp: "メロン"}, {en: "grape", jp: "ぶどう"}, {en: "orange", jp: "オレンジ"},
+                {en: "tomato", jp: "トマト"}, {en: "potato", jp: "じゃがいも"}, {en: "onion", jp: "玉ねぎ"},
+                {en: "breakfast", jp: "朝食"}, {en: "lunch", jp: "昼食"}, {en: "dinner", jp: "夕食"},
+                {en: "sweet", jp: "甘い"}, {en: "spicy", jp: "辛い"}, {en: "salty", jp: "塩辛い"}, {en: "delicious", jp: "美味しい"}
+            ],
+            animals: [
+                {en: "dog", jp: "犬"}, {en: "cat", jp: "猫"}, {en: "bird", jp: "鳥"}, {en: "horse", jp: "馬"},
+                {en: "camel", jp: "ラクダ"}, {en: "gorilla", jp: "ゴリラ"}, {en: "orangutan", jp: "オランウータン"},
+                {en: "koala", jp: "コアラ"}, {en: "fox", jp: "キツネ"}, {en: "mouse", jp: "ねずみ"},
+                {en: "crocodile", jp: "ワニ"}, {en: "snake", jp: "蛇"}, {en: "whale", jp: "クジラ"},
+                {en: "dolphin", jp: "イルカ"}, {en: "penguin", jp: "ペンギン"}, {en: "sea turtle", jp: "ウミガメ"},
+                {en: "shark", jp: "サメ"}, {en: "crab", jp: "カニ"}, {en: "jellyfish", jp: "クラゲ"},
+                {en: "ant", jp: "アリ"}, {en: "beetle", jp: "カブトムシ"}, {en: "stag beetle", jp: "クワガタムシ"}, 
+                {en: "dragonfly", jp: "トンボ"}, {en: "firefly", jp: "ホタル"}, {en: "octopus", jp: "タコ"},
+                {en: "squid", jp: "イカ"}, {en: "shrimp", jp: "エビ"}, {en: "starfish", jp: "ヒトデ"},
+                {en: "grasshopper", jp: "バッタ"}, {en: "mantis", jp: "カマキリ"}, {en: "spider", jp: "クモ"},
+                {en: "cicada", jp: "セミ"}, {en: "mosquito", jp: "蚊"}, {en: "polar bear", jp: "ホッキョクグマ"},
+                {en: "hippo", jp: "カバ"}, {en: "cow", jp: "牛"}, {en: "kangaroo", jp: "カンガルー"},
+                {en: "deer", jp: "鹿"}, {en: "pig", jp: "豚"}, {en: "hamster", jp: "ハムスター"},
+                {en: "wolf", jp: "狼"}, {en: "bat", jp: "コウモリ"}, {en: "chicken", jp: "ニワトリ"},
+                {en: "duck", jp: "アヒル"}, {en: "hawk", jp: "タカ"}, {en: "eagle", jp: "ワシ"},
+                {en: "sea otter", jp: "ラッコ"}, {en: "goat", jp: "ヤギ"},
+                {en: "lion", jp: "ライオン"}, {en: "monkey", jp: "サル"}, {en: "elephant", jp: "ゾウ"},
+                {en: "panda", jp: "パンダ"}, {en: "bear", jp: "クマ"}, {en: "rabbit", jp: "ウサギ"},
+                {en: "tiger", jp: "トラ"}, {en: "giraffe", jp: "キリン"}, {en: "zebra", jp: "シマウマ"},
+                {en: "butterfly", jp: "チョウ"}, {en: "frog", jp: "カエル"}, {en: "fish", jp: "魚"}
+            ],
+            time: [
+                {en: "January", jp: "1月"}, {en: "April", jp: "4月"}, {en: "July", jp: "7月"},
+                {en: "October", jp: "10月"}, {en: "February", jp: "2月"}, {en: "March", jp: "3月"},
+                {en: "May", jp: "5月"}, {en: "June", jp: "6月"}, {en: "August", jp: "8月"},
+                {en: "September", jp: "9月"}, {en: "November", jp: "11月"}, {en: "December", jp: "12月"},
+                {en: "month", jp: "月"}, {en: "year", jp: "年"},
+                {en: "Monday", jp: "月曜日"}, {en: "Wednesday", jp: "水曜日"}, {en: "Friday", jp: "金曜日"},
+                {en: "Sunday", jp: "日曜日"}, {en: "Tuesday", jp: "火曜日"}, {en: "Thursday", jp: "木曜日"},
+                {en: "Saturday", jp: "土曜日"}, {en: "day", jp: "日"}, {en: "week", jp: "週"},
+                {en: "spring", jp: "春"}, {en: "summer", jp: "夏"}, {en: "autumn", jp: "秋"}, {en: "winter", jp: "冬"},
+                {en: "sunny", jp: "晴れ"}, {en: "rainy", jp: "雨"}, {en: "cloudy", jp: "曇り"},
+                {en: "windy", jp: "風が強い"}, {en: "cold", jp: "寒い"}, {en: "warm", jp: "暖かい"},
+                {en: "humid", jp: "湿気が多い"},{en: "snowy", jp: "雪"}
+            ],
+            people: [
+                {en: "mother", jp: "母"}, {en: "father", jp: "父"}, {en: "sister", jp: "姉妹"},
+                {en: "brother", jp: "兄弟"}, {en: "friend", jp: "友達"}, {en: "grandfather", jp: "おじいさん"},
+                {en: "grandmother", jp: "おばあさん"}, {en: "grandparents", jp: "祖父母"},
+                {en: "uncle", jp: "おじさん"}, {en: "aunt", jp: "おばさん"}, {en: "cousin", jp: "いとこ"},
+                {en: "I", jp: "私は"}, {en: "you", jp: "あなたは"}, {en: "she", jp: "彼女は"}, {en: "he", jp: "彼は"},
+                {en: "we", jp: "私たちは"}, {en: "man", jp: "男性"}, {en: "woman", jp: "女性"}, {en: "boy", jp: "男の子"},
+                {en: "girl", jp: "女の子"}, {en: "classmate", jp: "クラスメート"}, {en: "baby", jp: "赤ちゃん"},
+                {en: "children", jp: "子供たち"},
+                {en: "kind", jp: "親切な"}, {en: "funny", jp: "おもしろい"}, {en: "tall", jp: "背が高い"},
+                {en: "active", jp: "活動的な"}, {en: "brave", jp: "勇敢な"}, {en: "friendly", jp: "友好的な"},
+                {en: "shy", jp: "内気な"}, {en: "gentle", jp: "優しい"},
+                {en: "smart", jp: "頭が良い"}, {en: "cool", jp: "かっこいい"}, {en: "strong", jp: "強い"}
+            ],
+            school: [
+                {en: "pencil", jp: "鉛筆"}, {en: "eraser", jp: "消しゴム"}, {en: "notebook", jp: "ノート"},
+                {en: "desk", jp: "机"}, {en: "chair", jp: "椅子"}, {en: "ruler", jp: "定規"},
+                {en: "marker", jp: "マーカー"}, {en: "pen", jp: "ペン"}, {en: "pencil case", jp: "筆箱"},
+                {en: "pencil sharpener", jp: "えんぴつけずり"}, {en: "glue", jp: "のり"},
+                {en: "stapler", jp: "ホッチキス"},　{en: "scissors", jp: "はさみ"}, {en: "crayon", jp: "クレヨン"},
+                {en: "dictionary", jp: "辞書"},
+                {en: "classroom", jp: "教室"}, {en: "computer room", jp: "コンピュータ室"}, {en: "entrance", jp: "玄関"},
+                {en: "gym", jp: "体育館"}, {en: "library", jp: "図書室"}, {en: "music room", jp: "音楽室"},
+                {en: "playground", jp: "運 動場"}, {en: "school nurse's office", jp: "保健室"},
+                {en: "restroom", jp: "トイレ"}, {en: "swimming pool", jp: "プール"},
+                {en: "teacher's office", jp: "教員室"}, {en: "school principal's office", jp: "校長室"},
+                {en: "science", jp: "理科"}, {en: "math", jp: "算数"}, {en: "music", jp: "音楽"},
+                {en: "Japanese", jp: "国語"}, {en: "calligraphy", jp: "書写"}, {en: "social studies", jp: "社会科"},
+                {en: "home economics", jp: "家庭科"}, {en: "moral education", jp: "道徳"},
+                {en: "English", jp: "英語"}, {en: "arts and crafts", jp: "図画工作"}, {en: "P.E.", jp: "体育"}
+            ],
+            actions: [
+                {en: "run", jp: "走る"}, {en: "read", jp: "読む"}, {en: "write", jp: "書く"},
+                {en: "listen", jp: "聞く"}, {en: "speak", jp: "話す"}, {en: "sing", jp: "歌う"}, {en: "live", jp: "住む"},
+                {en: "make", jp: "作る"}, {en: "wear", jp: "着ている"}, {en: "talk", jp: "話す"},
+                {en: "watch", jp: "(テレビなどを)見る"}, {en: "help", jp: "手伝う"}, {en: "practice", jp: "練習する"},
+                {en: "enjoy", jp: "楽しむ"}, {en: "visit", jp: "訪れる"}, {en: "ride", jp: "乗る"},
+                {en: "come", jp: "来る"}, {en: "get", jp: "手に入れる"}, {en: "save", jp: "救う"},
+                {en: "stop", jp: "止まる"}, {en: "join", jp: "参加する"}, {en: "work", jp: "働く"},
+                {en: "dance", jp: "踊る"}, {en: "swim", jp: "泳ぐ"}, {en: "cook", jp: "料理する"},
+                {en: "sleep", jp: "眠る"}, {en: "jump", jp: "ジャンプする"}, {en: "play", jp: "遊ぶ"},
+                {en: "spell", jp: "つづる"}, {en: "like", jp: "好きである"}, {en: "want", jp: "ほしい"},
+                {en: "catch", jp: "とる"}, {en: "fly", jp: "飛ぶ"}, {en: "have", jp: "ある/持っている"},
+                {en: "go", jp: "行く"}, {en: "turn", jp: "曲がる"}, {en: "see", jp: "見る/見える"},
+                {en: "look", jp: "見る/目を向ける"}, {en: "drink", jp: "飲む"}, {en: "eat", jp: "食べる"},
+                {en: "buy", jp: "買う"}, {en: "call", jp: "呼ぶ"}, {en: "draw", jp: "描く"},
+                {en: "drive", jp: "運転する"}, {en: "climb", jp: "登る"}, {en: "cut", jp: "切る"},
+                {en: "hop", jp: "跳ねる"}, {en: "kick", jp: "蹴る"}, {en: "meet", jp: "会う"},
+                {en: "put", jp: "置く"}, {en: "sit", jp: "座る"}, {en: "stand", jp: "立つ"},
+                {en: "travel", jp: "旅する"}, {en: "try", jp: "試す"}, {en: "wait", jp: "待つ"},
+                {en: "teach", jp: "教える"}, {en: "wash", jp: "洗う"},
+                {en: "study", jp: "勉強する"}, {en: "clean", jp: "掃除する"}, {en: "walk", jp: "歩く"}
+            ],
+            town: [
+                {en: "hospital", jp: "病院"}, {en: "park", jp: "公園"}, {en: "library", jp: "図書館"},
+                {en: "station", jp: "駅"}, {en: "supermarket", jp: "スーパー"}, {en: "school", jp: "学校"},
+                {en: "temple", jp: "寺"}, {en: "zoo", jp: "動物園"}, {en: "bank", jp: "銀行"},
+                {en: "house", jp: "家"}, {en: "museum", jp: "博物館"}, {en: "bus stop", jp: "バス停"},
+                {en: "police station", jp: "警察署"}, {en: "fire station", jp: "消防署"},
+                {en: "post office", jp: "郵便局"}, {en: "bookstore", jp: "本屋"}, {en: "restaurant", jp: "レストラン"},
+                {en: "castle", jp: "城"}, {en: "shrine", jp: "神社"}, {en: "church", jp: "教会"},
+                {en: "aquarium", jp: "水族館"}, {en: "stadium", jp: "スタジアム"}, {en: "amusement park", jp: "遊園地"},
+                {en: "convenience store", jp: "コンビニエンスストア"}, {en: "elementary school", jp: "小学校"},
+                {en: "junior high school", jp: "中学校"}, {en: "city hall", jp: "市役所"},
+                {en: "gas station", jp: "ガソリンスタンド"}, {en: "airport", jp: "空港"},
+                {en: "kindergarten", jp: "幼稚園"}, {en: "left", jp: "左"}, {en: "right", jp: "右"},
+                {en: "straight", jp: "まっすぐ"}, {en: "block", jp: "区画"}, {en: "corner", jp: "角"},
+                {en: "traffic light", jp: "信号"}, {en: "up", jp: "上へ"}, {en: "down", jp: "下へ"},
+                {en: "in", jp: "中に"}, {en: "on", jp: "上に"}, {en: "under", jp: "下に"}, {en: "by", jp: "そばに"}
+            ]
+        };
+
+        const sentenceData = [
+            { words: ["How", "do", "you", "spell", "your", "name", "?"], hint: "あなたの名前はどのようにつづリますか。" },
+            { words: ["What", "subject", "do", "you", "like", "?"], hint: "あなたはどの教科が好きですか。" },
+            { words: ["I", "like", "social studies", "."], hint: "私は社会科が好きです。" },
+            { words: ["When", "is", "your", "birthday", "?"], hint: "あなたの誕生日はいつすか。" },
+            { words: ["My", "birthday", "is", "August 3rd", "."], hint: "私の誕生日は8月3日です。" },
+            { words: ["What", "do", "you", "want", "for", "your", "birthday", "."], hint: "あなたの誕生日には何が欲しいですか。" },
+            { words: ["I", "want", "a", "new", "tablet", "."], hint: "新しいタブレットが欲しい。" },
+            { words: ["Can", "you", "play", "the", "recorder", "?"], hint: "あなたはリコーダーは吹けますか。" },
+            { words: ["Yes", "I", "can", "."], hint: "はい、できます。" },
+            { words: ["No", "I", "can't", "."], hint: "いいえ、できません。" },
+            { words: ["I", "can't", "play", "the", "piano", "."], hint: "私はピアノを弾けません。" },
+            { words: ["I", "can", "play", "badminton", "well", "."], hint: "私はバドミントンが上手です。" },
+            { words: ["Who", "is", "this", "?"], hint: "こちらは誰ですか。" },
+            { words: ["This", "is", "my", "friend", "."], hint: "こちらは私の友達です。" },
+            { words: ["She", "can", "swim", "fast", "."], hint: "彼女は速く泳ぐことができます。" },
+            { words: ["He", "is", "a", "good", "tennis", "player", "."], hint: "彼は良いテニスが選手です。" },
+            { words: ["Who", "is", "Carlos", "?"], hint: "カルロスとは誰ですか。" },
+            { words: ["He", "is", "strong", "."], hint: "彼は強いです。" },
+            { words: ["Where", "is", "the", "park", "?"], hint: "公園はどこですか。" },
+            { words: ["Go", "straight", "for", "two", "blocks", "."], hint: "まっすぐ2ブロック進んでください。" },
+            { words: ["Turn", "left", "at", "the", "corner", "."], hint: "角を左に曲がりなさい。" },
+            { words: ["You", "can", "see", "it", "on", "your", "right", "."], hint: "右側に見えます。" },
+            { words: ["What", "do", "you", "have", "in", "your", "town", "?"], hint: "あなたの町には何がありますか。" },
+            { words: ["We", "have", "a", "nice", "museum", "."], hint: "私たちにはすてきな博物館があります。" },
+            { words: ["What", "would", "you", "like", "?"], hint: "何にいたしますか。" },
+            { words: ["I'd", "like", "a", "beef", "bowl", ",", "please", "."], hint: "牛丼をお願いします。" },
+            { words: ["How", "much", "is", "it", "?"], hint: "いくらですか。" },
+            { words: ["I", "like", "soccer", "."], hint: "私はサッカーが好きです。" },
+            { words: ["I'm", "from", "Germany", "."], hint: "私はドイツの出身です。" },
+            { words: ["What", "is", "your", "treasure", "?"], hint: "あなたの宝物は何ですか。" },
+            { words: ["I", "can", "speak", "English", "."], hint: "私は英語を話せます。" },
+            { words: ["My", "treasure", "is", "this", "watch", "."], hint: "私の宝物は、この時計です。" },
+            { words: ["It's", "from", "my", "grandmother", "."], hint: "お祖母ちゃんからです。" },
+            { words: ["I", "always", "get", "up", "at", "6 a.m.", "."], hint: "私はいつも午前6時に起きます。" },
+            { words: ["I", "usually", "play", "basketball", "at", "3 p.m.", "."], hint: "私はたいてい午後3時にバスケットボールをします。" },
+            { words: ["I", "sometimes", "watch", "TV", "at", "8 p.m.", "."], hint: "私はときどき午後8時にテレビを見ます。" },
+            { words: ["I", "went", "to", "the", "stadium", "."], hint: "私はスタジアムに行きました。" },
+            { words: ["I", "enjoyed", "watching", "a", "rugby", "game", "."], hint: "私はラグビーの試合を見て楽しみました。" },
+            { words: ["I", "ate", "fried chicken", "."], hint: "私はフライドチキンを食べました。" },
+            { words: ["It", "was", "great", "."], hint: "すばらしかった。" },
+            { words: ["I", "want", "to", "go", "to", "Canada", "."], hint: "カナダを行きたいです。" },
+            { words: ["You", "can", "buy", "maple syrup", "in", "Canada", "."], hint: "カナダではメープルシロップを買うことができます。" },
+            { words: ["You", "can", "visit", "the", "British Museum", "."], hint: "大英博物館を訪れることができます。" },
+            { words: ["This", "is", "my", "sweater", "."], hint: "これは私のセーターです。" },
+            { words: ["It's", "from", "New Zealand", "."], hint: "ニュージーランド製です。" },
+            { words: ["The Netherlands", "is", "in", "Europe", "."], hint: "オランダはヨーロッパにあります。" },
+            { words: ["Switzerland", "is", "a", "beautiful", "country", "."], hint: "スイスは美しい国です。" }
+
+
+
+        ];
+
+        let currentCategory = "sports";
+        let activeTab = "memory";
+        let activeTimer = null;
+
+        function stopTimer() {
+            if (activeTimer) {
+                clearInterval(activeTimer);
+                activeTimer = null;
+            }
+        }
+
+        function switchTab(tabId, btnElement) {
+            stopTimer();
+            activeTab = tabId;
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.game-container').forEach(g => g.classList.remove('active'));
+            
+            if (btnElement) btnElement.classList.add('active');
+            document.getElementById(tabId + '-game').classList.add('active');
+
+            loadCurrentGame();
+        }
+
+        function changeCategory() {
+            currentCategory = document.getElementById('categoryDropdown').value;
+            loadCurrentGame();
+        }
+
+        function loadCurrentGame() {
+            stopTimer();
+            if (activeTab === 'memory') initMemoryGame();
+            if (activeTab === 'match') initMatchGame();
+            if (activeTab === 'arrangeLetters') initLetterGame();
+            if (activeTab === 'arrangeSentence') initSentenceGame();
+            if (activeTab === 'typing') resetTypingGameDisplay();
+        }
+
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let matchesFound = 0;
+        let memorySeconds = 0;
+
+        function initMemoryGame() {
+            stopTimer();
+            const grid = document.getElementById("memoryGrid");
+            grid.innerHTML = "";
+            matchesFound = 0;
+            memorySeconds = 0;
+            document.getElementById("memory-score").innerText = matchesFound;
+            document.getElementById("memory-timer").innerText = memorySeconds;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+
+            activeTimer = setInterval(() => {
+                memorySeconds++;
+                document.getElementById("memory-timer").innerText = memorySeconds;
+            }, 1000);
+
+            let pool = vocabData[currentCategory];
+            let items = [...pool].sort(() => 0.5 - Math.random()).slice(0, 4);
+            let deck = [];
+            items.forEach(item => {
+                deck.push({ text: item.en, pairId: item.en });
+                deck.push({ text: item.jp, pairId: item.en });
+            });
+            deck.sort(() => 0.5 - Math.random());
+
+            deck.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "memory-card";
+                card.dataset.pair = item.pairId;
+                card.innerText = "?";
+                card.onclick = function() {
+                    if (lockBoard || card.classList.contains("flipped") || card.classList.contains("matched")) return;
+                    card.classList.add("flipped");
+                    card.innerText = item.text;
+
+                    if (!firstCard) {
+                        firstCard = card;
+                        return;
+                    }
+                    secondCard = card;
+
+                    if (firstCard.dataset.pair === secondCard.dataset.pair) {
+                        firstCard.classList.add("matched");
+                        secondCard.classList.add("matched");
+                        matchesFound++;
+                        document.getElementById("memory-score").innerText = matchesFound;
+                        firstCard = null;
+                        secondCard = null;
+                        if (matchesFound === 4) stopTimer();
+                    } else {
+                        lockBoard = true;
+                        setTimeout(() => {
+                            firstCard.classList.remove("flipped");
+                            firstCard.innerText = "?";
+                            secondCard.classList.remove("flipped");
+                            secondCard.innerText = "?";
+                            firstCard = null;
+                            secondCard = null;
+                            lockBoard = false;
+                        }, 900);
+                    }
+                };
+                grid.appendChild(card);
+            });
+        }
+
+        let selectedEng = null;
+        let matchCount = 0;
+        let matchSeconds = 0;
+
+        function initMatchGame() {
+            stopTimer();
+            const engCol = document.getElementById("englishColumn");
+            const jpCol = document.getElementById("japaneseColumn");
+            engCol.innerHTML = "";
+            jpCol.innerHTML = "";
+            document.getElementById("match-message").innerText = "";
+            matchCount = 0;
+            matchSeconds = 0;
+            selectedEng = null;
+            document.getElementById("match-score").innerText = matchCount;
+            document.getElementById("match-timer").innerText = matchSeconds;
+
+            activeTimer = setInterval(() => {
+                matchSeconds++;
+                document.getElementById("match-timer").innerText = matchSeconds;
+            }, 1000);
+
+            let pool = vocabData[currentCategory];
+            let items = [...pool].sort(() => 0.5 - Math.random()).slice(0, 4);
+            let engItems = [...items].sort(() => 0.5 - Math.random());
+            let jpItems = [...items].sort(() => 0.5 - Math.random());
+
+            engItems.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "match-item";
+                div.innerText = item.en;
+                div.dataset.key = item.en;
+                div.onclick = function() {
+                    if (div.classList.contains("matched")) return;
+                    document.querySelectorAll("#englishColumn .match-item").forEach(i => i.classList.remove("selected"));
+                    div.classList.add("selected");
+                    selectedEng = div;
+                };
+                engCol.appendChild(div);
+            });
+
+            jpItems.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "match-item";
+                div.innerText = item.jp;
+                div.dataset.key = item.en;
+                div.onclick = function() {
+                    if (div.classList.contains("matched") || !selectedEng) return;
+                    if (selectedEng.dataset.key === div.dataset.key) {
+                        selectedEng.classList.add("matched");
+                        div.classList.add("matched");
+                        selectedEng.classList.remove("selected");
+                        selectedEng = null;
+                        matchCount++;
+                        document.getElementById("match-score").innerText = matchCount;
+                        if (matchCount === 4) {
+                            stopTimer();
+                            document.getElementById("match-message").innerText = `🎉 All matched in ${matchSeconds}s!`;
+                            document.getElementById("match-message").style.color = "#00897B";
+                        }
+                    } else {
+                        div.style.background = "#FFCDD2";
+                        setTimeout(() => { div.style.background = "#E1F5FE"; }, 500);
+                    }
+                };
+                jpCol.appendChild(div);
+            });
+        }
+
+        let currentWord = {};
+        let letterScore = 0;
+        let letterSeconds = 0;
+
+        function initLetterGame() {
+            stopTimer();
+            letterSeconds = 0;
+            letterScore = 0;
+            document.getElementById("letter-score").innerText = letterScore;
+            document.getElementById("letter-timer").innerText = letterSeconds;
+
+            activeTimer = setInterval(() => {
+                letterSeconds++;
+                document.getElementById("letter-timer").innerText = letterSeconds;
+            }, 1000);
+
+            loadNextLetterPuzzle();
+        }
+
+        function loadNextLetterPuzzle() {
+            let pool = vocabData[currentCategory];
+            currentWord = pool[Math.floor(Math.random() * pool.length)];
+            
+            document.getElementById("letter-hint").innerText = `Meaning: ${currentWord.jp}`;
+            document.getElementById("letter-message").innerText = "";
+
+            const slots = document.getElementById("letterSlots");
+            const bank = document.getElementById("letterBank");
+            slots.innerHTML = "";
+            bank.innerHTML = "";
+
+            let letters = currentWord.en.split('').sort(() => 0.5 - Math.random());
+            letters.forEach(char => {
+                const tile = document.createElement("div");
+                tile.className = "puzzle-tile";
+                tile.innerText = char;
+                tile.onclick = function() {
+                    if (tile.parentElement === bank) {
+                        bank.removeChild(tile);
+                        slots.appendChild(tile);
+                    } else {
+                        slots.removeChild(tile);
+                        bank.appendChild(tile);
+                    }
+                    
+                    let formed = Array.from(slots.children).map(t => t.innerText).join('');
+                    if (formed === currentWord.en) {
+                        letterScore++;
+                        document.getElementById("letter-score").innerText = letterScore;
+                        document.getElementById("letter-message").innerText = "🌟 Correct! Loading next word...";
+                        document.getElementById("letter-message").style.color = "#00897B";
+                        setTimeout(loadNextLetterPuzzle, 1000);
+                    } else {
+                        document.getElementById("letter-message").innerText = "";
+                    }
+                };
+                bank.appendChild(tile);
+            });
+        }
+
+        let currentSent = {};
+        let sentenceScore = 0;
+        let sentenceSeconds = 0;
+
+        function initSentenceGame() {
+            stopTimer();
+            sentenceSeconds = 0;
+            sentenceScore = 0;
+            document.getElementById("sentence-score").innerText = sentenceScore;
+            document.getElementById("sentence-timer").innerText = sentenceSeconds;
+
+            activeTimer = setInterval(() => {
+                sentenceSeconds++;
+                document.getElementById("sentence-timer").innerText = sentenceSeconds;
+            }, 1000);
+
+            loadNextSentencePuzzle();
+        }
+
+        function loadNextSentencePuzzle() {
+            currentSent = sentenceData[Math.floor(Math.random() * sentenceData.length)];
+            document.getElementById("sentence-message").innerText = `Hint: ${currentSent.hint}`;
+
+            const slots = document.getElementById("sentenceSlots");
+            const bank = document.getElementById("sentenceBank");
+            slots.innerHTML = "";
+            bank.innerHTML = "";
+
+            let shuffled = [...currentSent.words].sort(() => 0.5 - Math.random());
+            shuffled.forEach(word => {
+                const tile = document.createElement("div");
+                tile.className = "puzzle-tile";
+                tile.innerText = word;
+                tile.onclick = function() {
+                    if (tile.parentElement === bank) {
+                        bank.removeChild(tile);
+                        slots.appendChild(tile);
+                    } else {
+                        slots.removeChild(tile);
+                        bank.appendChild(tile);
+                    }
+
+                    let formed = Array.from(slots.children).map(t => t.innerText);
+                    if (formed.length === currentSent.words.length) {
+                        if (formed.join(' ') === currentSent.words.join(' ')) {
+                            sentenceScore++;
+                            document.getElementById("sentence-score").innerText = sentenceScore;
+                            document.getElementById("sentence-message").innerText = "🎉 Perfect sentence! Loading next...";
+                            document.getElementById("sentence-message").style.color = "#00897B";
+                            setTimeout(loadNextSentencePuzzle, 1200);
+                        } else {
+                            document.getElementById("sentence-message").innerText = "❌ Try reordering!";
+                            document.getElementById("sentence-message").style.color = "#C62828";
+                        }
+                    } else {
+                        document.getElementById("sentence-message").innerText = `Hint: ${currentSent.hint}`;
+                    }
+                };
+                bank.appendChild(tile);
+            });
+        }
+
+        let typingTarget = "";
+        let typingScore = 0;
+        let timeLeft = 60;
+        let typingActive = false;
+
+        function resetTypingGameDisplay() {
+            stopTimer();
+            typingActive = false;
+            typingScore = 0;
+            timeLeft = 60;
+            document.getElementById("typing-score").innerText = typingScore;
+            document.getElementById("typing-timer").innerText = timeLeft;
+            document.getElementById("typingPrompt").innerText = "Press Start Below!";
+            document.getElementById("typingInput").value = "";
+            document.getElementById("typingInput").disabled = true;
+            document.getElementById("typingStartBtn").style.display = "inline-block";
+            document.getElementById("typingStartBtn").innerText = "Start 60s Challenge";
+            document.getElementById("typing-message").innerText = "Click start to begin the 60-second challenge!";
+        }
+
+        function initTypingGame() {
+            stopTimer();
+            typingScore = 0;
+            timeLeft = 60;
+            typingActive = true;
+            document.getElementById("typing-score").innerText = typingScore;
+            document.getElementById("typing-timer").innerText = timeLeft;
+            document.getElementById("typingStartBtn").style.display = "none";
+            document.getElementById("typingInput").disabled = false;
+            document.getElementById("typingInput").focus();
+
+            loadNextTypingWord();
+
+            activeTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("typing-timer").innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    stopTimer();
+                    typingActive = false;
+                    document.getElementById("typingInput").disabled = true;
+                    document.getElementById("typing-message").innerHTML = `⏰ Time's up! You typed <strong>${typingScore}</strong> words correctly!`;
+                    document.getElementById("typing-message").style.color = "#0288D1";
+                    document.getElementById("typingStartBtn").style.display = "inline-block";
+                    document.getElementById("typingStartBtn").innerText = "Play Again";
+                }
+            }, 1000);
+        }
+
+        function loadNextTypingWord() {
+            let pool = vocabData[currentCategory];
+            let item = pool[Math.floor(Math.random() * pool.length)];
+            typingTarget = item.en;
+            document.getElementById("typingPrompt").innerText = `${item.jp} (${typingTarget})`;
+            document.getElementById("typingInput").value = "";
+            document.getElementById("typing-message").innerText = "";
+        }
+
+        function handleTyping(e) {
+            if (!typingActive) return;
+            if (e.key === 'Enter') {
+                let val = document.getElementById("typingInput").value.trim().toLowerCase();
+                if (val === typingTarget) {
+                    typingScore++;
+                    document.getElementById("typing-score").innerText = typingScore;
+                    document.getElementById("typing-message").innerText = "✅ Correct!";
+                    document.getElementById("typing-message").style.color = "#00897B";
+                    loadNextTypingWord();
+                } else {
+                    document.getElementById("typing-message").innerText = "❌ Incorrect, try again!";
+                    document.getElementById("typing-message").style.color = "#C62828";
+                }
+            }
+        }
+
+        window.onload = function() {
+            initMemoryGame();
+        };
+    </script>
+</body>
+</html>
